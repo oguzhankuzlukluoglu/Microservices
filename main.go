@@ -9,15 +9,9 @@ import (
 	"github.com/mattn/go-colorable"
 	"github.com/oguzhankuzlukluoglu/Microservices/config"
 	"github.com/oguzhankuzlukluoglu/Microservices/models"
+	"github.com/oguzhankuzlukluoglu/Microservices/routes"
 	"github.com/sirupsen/logrus"
 )
-
-type User struct {
-	ID       uint   `gorm:"primaryKey"`
-	Name     string `gorm:"size:255"`
-	Email    string `gorm:"unique;size:255"`
-	Password string `gorm:"size:255"`
-}
 
 func main() {
 	user, err := user.Current()
@@ -42,11 +36,8 @@ func main() {
 	// Veritabanı bağlantısını başlatır
 	models.SetDB(config.GetConnectionString())
 
-	
-	db := models.GetDB()
-	db.AutoMigrate(&User{})
-
 	router := gin.Default()
+	routes.RegisterTaskRoutes(router)
 	if err := router.Run(":8000"); err != nil {
 		logrus.Fatal(err)
 		os.Exit(1)
