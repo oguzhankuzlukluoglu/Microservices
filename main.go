@@ -12,6 +12,12 @@ import (
 	"github.com/oguzhankuzlukluoglu/Microservices/routes"
 	"github.com/sirupsen/logrus"
 )
+type User struct {
+	ID    uint   `json:"id" gorm:"primaryKey"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
 
 func main() {
 	user, err := user.Current()
