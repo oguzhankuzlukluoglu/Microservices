@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -12,12 +14,13 @@ func SetDB(connection string) {
 	var err error
 	db, err = gorm.Open("mysql", connection)
 	if err != nil {
+		fmt.Println("Veritabanına bağlanılamadı:", err)
 		panic(err)
 	}
 	db.SingularTable(true)
+	fmt.Println("Veritabanına başarıyla bağlanıldı.")
 }
 
-// rules upgraded
 func SetDBMigrate(connection string) {
 	var err error
 	dbMigrate, err = gorm.Open("mysql", connection)
@@ -28,6 +31,9 @@ func SetDBMigrate(connection string) {
 }
 
 func GetDB() *gorm.DB {
+	if db == nil {
+		panic("Veritabanı bağlantısı henüz başlatılmamış")
+	}
 	return db
 }
 

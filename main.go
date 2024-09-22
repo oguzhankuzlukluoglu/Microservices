@@ -12,8 +12,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func main() {
+type User struct {
+	ID       uint   `gorm:"primaryKey"`
+	Name     string `gorm:"size:255"`
+	Email    string `gorm:"unique;size:255"`
+	Password string `gorm:"size:255"`
+}
 
+func main() {
 	user, err := user.Current()
 	if err != nil {
 		panic(err)
@@ -33,14 +39,18 @@ func main() {
 
 	config.LoadConfig(runmod)
 
+	// Veritabanı bağlantısını başlatır
 	models.SetDB(config.GetConnectionString())
+
+	
+	db := models.GetDB()
+	db.AutoMigrate(&User{})
 
 	router := gin.Default()
 	if err := router.Run(":8000"); err != nil {
 		logrus.Fatal(err)
 		os.Exit(1)
 	}
-
 }
 
 func initLogger() {
